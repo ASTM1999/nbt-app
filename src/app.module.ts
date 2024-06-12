@@ -10,13 +10,12 @@ import { ConfigModule } from '@nestjs/config';
 import { EncryptionService } from './utils/encryption.service';
 
 
-
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      }),
-      MongooseModule.forRoot("mongodb+srv://anusornsriprom44:AMgxxhOKIHmlXUua@cluster0.bmiggf1.mongodb.net/toolkithub"),
+    }),
+    MongooseModule.forRoot(process.env.DATABASE_URL),
     UsersModule,
     ProjectModule,
     TaskModule,
