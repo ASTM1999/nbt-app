@@ -9,6 +9,10 @@ import { CommentModule } from './comment/comment.module';
 import { ConfigModule } from '@nestjs/config';
 import { EncryptionService } from './utils/encryption.service';
 
+
+console.log('DATABASE_URL:', process.env.DATABASE_URL);
+console.log('ENCRYPTION_KEY:', process.env.ENCRYPTION_KEY);
+
 @Module({
   imports: [
     ConfigModule.forRoot({
