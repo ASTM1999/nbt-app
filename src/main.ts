@@ -10,7 +10,7 @@ async function bootstrap() {
       'http://localhost:5173',
       'https://toolkithub282.web.app'
     ],
-    // credentials: true,
+    credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'], 
   });
   await app.listen(port, "0.0.0.0");

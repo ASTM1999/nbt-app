@@ -12,7 +12,6 @@ export class TaskController {
     private readonly encryptionService: EncryptionService, // Inject EncryptionService
   ) { }
 
-
   @Post()
   async create(@Body('data', new ValidationPipe()) encryptedData: string): Promise<Task> {
     // console.log(encryptedData)
