@@ -1,20 +1,17 @@
 import { Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { Request, Response, NextFunction } from 'express';
 
 @Injectable()
 export class IpWhitelistMiddleware implements NestMiddleware {
-  constructor(private configService: ConfigService) {}
+  private readonly whitelistedIps: string[] = process.env.ALLOWED_IP_ADDRESSES?.split(',') || [];
 
   use(req: Request, res: Response, next: NextFunction) {
-    const allowedIps = this.configService.get<string>('ALLOWED_IP_ADDRESSES').split(',');
+    const clientIp = req.socket.remoteAddress;
 
-    const requestIp = req.ip || req.connection.remoteAddress;
-
-    if (allowedIps.includes(requestIp)) {
+    if (this.whitelistedIps.includes(clientIp)) {
       next();
     } else {
-      throw new UnauthorizedException('Your IP address is not authorized to access this resource');
+      throw new UnauthorizedException('IP not allowed');
     }
   }
 }
