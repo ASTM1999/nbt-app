@@ -27,8 +27,8 @@ export class CreateTaskDto {
   // @IsString()
   // comments: string[];
 
-  @IsString()
   @IsOptional()
+  @IsString()
   project_id?: string;
 
   // @IsString()

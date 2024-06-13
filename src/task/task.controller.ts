@@ -12,7 +12,7 @@ export class TaskController {
     private readonly encryptionService: EncryptionService, // Inject EncryptionService
   ) { }
 
-  
+
   @Post()
   async create(@Body('data', new ValidationPipe()) encryptedData: string): Promise<Task> {
     // console.log(encryptedData)
@@ -33,6 +33,9 @@ export class TaskController {
     const decryptedData = JSON.parse(this.encryptionService.decryptData(encryptedData));
     const updateTaskDto = new CreateTaskDto();
     Object.assign(updateTaskDto, decryptedData);
+    if (updateTaskDto.project_id === '') {
+      updateTaskDto.project_id = undefined;
+    }
     return this.taskService.update(id, updateTaskDto);
   }
 
@@ -41,7 +44,7 @@ export class TaskController {
     const decryptedData = JSON.parse(this.encryptionService.decryptData(encryptedData));
     return this.taskService.updateStatus(id, decryptedData.status);
   }
-  
+
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<Task> {
     return this.taskService.delete(id);
