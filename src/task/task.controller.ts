@@ -35,6 +35,7 @@ export class TaskController {
   }
 
   @Put(':id')
+  @UseGuards(IpWhitelistGuard)
   async update(@Param('id') id: string, @Body('data') encryptedData: string): Promise<Task> {
     const decryptedData = JSON.parse(this.encryptionService.decryptData(encryptedData));
     const updateTaskDto = new CreateTaskDto();
@@ -43,12 +44,14 @@ export class TaskController {
   }
 
   @Put(':id/status')
+  @UseGuards(IpWhitelistGuard)
   async updateStatus(@Param('id') id: string, @Body('data') encryptedData: string): Promise<Task> {
     const decryptedData = JSON.parse(this.encryptionService.decryptData(encryptedData));
     return this.taskService.updateStatus(id, decryptedData.status);
   }
   
   @Delete(':id')
+  @UseGuards(IpWhitelistGuard)
   async delete(@Param('id') id: string): Promise<Task> {
     return this.taskService.delete(id);
   }
