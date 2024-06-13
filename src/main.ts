@@ -1,22 +1,18 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ConfigService } from '@nestjs/config';
 
-// const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const configService = app.get(ConfigService);
-
-  const allowedOrigins = configService.get<string>('ALLOWED_ORIGINS')?.split(',') || [];
-
   app.enableCors({
-    origin: allowedOrigins,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
+    origin: [
+      'http://localhost:5173',
+      'https://toolkithub282.web.app'
+    ],
+    // credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'], 
   });
-
-  const port = configService.get<number>('PORT') || 3000;
   await app.listen(port, "0.0.0.0");
 }
 bootstrap();
