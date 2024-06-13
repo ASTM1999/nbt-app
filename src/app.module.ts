@@ -22,6 +22,6 @@ import { EncryptionService } from './utils/encryption.service';
     CommentModule,
   ],
   controllers: [AppController],
-  providers: [AppService, EncryptionService],
+  providers: [AppService, EncryptionService]
 })
 export class AppModule { }

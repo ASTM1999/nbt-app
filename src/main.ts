@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { UnauthorizedExceptionFilter } from './filters/unauthorizedException';
 
 const port = process.env.PORT || 3000;
 
@@ -13,6 +14,8 @@ async function bootstrap() {
     // credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'], 
   });
+  app.useGlobalFilters(new UnauthorizedExceptionFilter())
   await app.listen(port, "0.0.0.0");
+
 }
 bootstrap();

@@ -1,11 +1,15 @@
 // task.controller.ts
-import { Controller, Get, Post, Body, Put, Param, Delete, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, ValidationPipe, UseGuards, UseFilters } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { Task } from './task.schema';
 import { EncryptionService } from 'src/utils/encryption.service';
+import { IpWhitelistGuard } from 'src/middleware/ip-whitelist.middleware';
+import { UnauthorizedExceptionFilter } from 'src/filters/unauthorizedException';
+// import { IpWhitelistMiddleware } from 'src/middleware/ip-whitelist.middleware';
 
 @Controller('tasks')
+@UseFilters(UnauthorizedExceptionFilter)
 export class TaskController {
   constructor(
     private readonly taskService: TaskService,
@@ -14,6 +18,7 @@ export class TaskController {
 
   
   @Post()
+  @UseGuards(IpWhitelistGuard) // ใช้ guard ที่นี่
   async create(@Body('data', new ValidationPipe()) encryptedData: string): Promise<Task> {
     // console.log(encryptedData)
     const decryptedData = JSON.parse(this.encryptionService.decryptData(encryptedData));
@@ -22,6 +27,7 @@ export class TaskController {
     Object.assign(createTaskDto, decryptedData);
     return this.taskService.create(createTaskDto);
   }
+
   @Get()
   async findAll(): Promise<string[]> {
     const tasks = await this.taskService.findAll();
