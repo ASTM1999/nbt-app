@@ -1,9 +1,8 @@
-import { Controller, Get, Post, Body, Put, Delete, Param, ValidationPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Delete, Param, ValidationPipe } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { Project } from './project.schema';
 import { EncryptionService } from 'src/utils/encryption.service';
-import { IpWhitelistGuard } from 'src/middleware/ip-whitelist.middleware';
 
 
 @Controller('projects')
@@ -20,7 +19,6 @@ export class ProjectController {
   // }
 
   @Post()
-  @UseGuards(IpWhitelistGuard)
   async create(@Body('data', new ValidationPipe()) encryptedData: string): Promise<Project> {
     // console.log(encryptedData)
     const decryptedData = JSON.parse(this.encryptionService.decryptData(encryptedData));
@@ -30,7 +28,6 @@ export class ProjectController {
     return this.projectService.create(createProjectDto);
   }
 
-
   @Get()
   async findAll(): Promise<string[]> {
     const projects = await this.projectService.findAll();
@@ -38,14 +35,12 @@ export class ProjectController {
   }
 
   @Put(':id')
-  @UseGuards(IpWhitelistGuard)
   async update(@Param('id') id: string, @Body('data') encryptedData: string): Promise<Project> {
     const decryptedData = JSON.parse(this.encryptionService.decryptData(encryptedData));
     return this.projectService.update(id, decryptedData);
   }
 
   @Delete(':id')
-  @UseGuards(IpWhitelistGuard)
   async delete(@Param('id') id: string): Promise<Project> {
     return this.projectService.delete(id);
   }
