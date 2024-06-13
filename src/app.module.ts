@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
@@ -8,6 +8,7 @@ import { TaskModule } from './task/task.module';
 import { CommentModule } from './comment/comment.module';
 import { ConfigModule } from '@nestjs/config';
 import { EncryptionService } from './utils/encryption.service';
+import { IpWhitelistMiddleware } from './ipwhitelistmiddleware';
 
 
 @Module({
@@ -24,4 +25,9 @@ import { EncryptionService } from './utils/encryption.service';
   controllers: [AppController],
   providers: [AppService, EncryptionService],
 })
-export class AppModule { }
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(IpWhitelistMiddleware).forRoutes('*')
+  }
+}
